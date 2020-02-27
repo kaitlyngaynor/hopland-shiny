@@ -82,4 +82,4 @@ records <- select(records, Camera, Species, Classification, Sex, Age, BuckClass,
 
 # Export cleaned file ---------------------------------------------
 
-write_csv(records, here::here('recordtable_hopland_for_shiny.csv'))
+write_csv(records, here::here('data', 'recordtable_hopland_for_shiny.csv'))
