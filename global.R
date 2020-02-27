@@ -31,36 +31,39 @@ hexes <- read_sf("shapefile", "hexagons_120acres_subset2") %>%
   st_transform(crs = "+proj=longlat +datum=WGS84")
 
 # import record table (vroom is much faster than read_csv!)
-records <- vroom("recordtable_hopland_for_shiny.csv", delim = ",") 
+records <- vroom("data/recordtable_hopland_for_shiny.csv", delim = ",") 
 records$Date <- as.Date(records$Date)
 
 # strip just month
 records$Month_Year <- format(as.Date(records$Date), "%Y-%m")
 
 # import camera operation spreadsheet
-camera_operation <- read_csv("camera_operation_phase1.csv") %>%
+camera_operation <- read_csv("data/camera_operation_phase1.csv") %>%
   mutate_at(c("Start", "End", "Problem1_from", "Problem1_to"),
              # "Problem2_from", "Problem2_to", "Problem3_from", "Problem3_to"),
             ~as.Date(., format = "%m/%d/%y"))
 
 # import camera metadata
-camera_metadata <- read.csv("data/camera_metadata_rasters.csv") 
+camera_metadata <- read.csv("data/camera_metadata_rasters.csv") %>% 
+  rename(Elevation = elevation.clean, Slope = slope.clean, Vegetation = vegetation.clean,
+         Vegetation_Coarser = vegetation.coarser.clean2, BLM_Dist = blm.dist.clean,
+         Boundary_Dist = bound.dist.clean, Fence_Dist = fence.dist.clean, HQ_Dist = hq.dist.clean,
+         Road_Dist = road.dist.clean, Water_Dist = water.dist.clean, Ruggedness9 = rugged9.clean,
+         Ruggedness25 = rugged25.clean, Ruggedness49 = rugged49.clean, Ruggedness81 = rugged81.clean,
+         Ruggedness121 = rugged121.clean, Viewshed = viewshed.clean, Viewshed_Reclass = viewshed.reclass.clean,
+         NDVI2016 = ndvi.16.clean.1, Vegetation_Edge_Dist = veg.edges.dist.clean, Chaparral_Edge_Dist = chap.edges.dist.clean)
 
-# no seasons for Hopland data (unless we want them)
-## specify seasons for each month-year
-#seasons <- tibble(
-#  Month_Year = c("2016-06", "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12",
-#                 "2017-01", "2017-02", "2017-03", "2017-04", "2017-05",
-#                 "2017-06", "2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12",
-#                 "2018-01", "2018-02", "2018-03", "2018-04", "2018-05",
-#                 "2018-06", "2018-07", "2018-08", "2018-09", "2018-10", "2018-11", "2018-12"),
-#  Season = c("Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet",
-#             "Wet", "Wet", "Wet", "Early Dry", "Early Dry",
-#             "Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet",
-#             "Wet", "Wet", "Wet", "Early Dry", "Early Dry",
-#             "Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet")
-#)
-
+# specify seasons for each month-year
+seasons <- tibble(
+  Month_Year = c("2016-03", "2016-04", "2016-05",
+                 "2016-06", "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12",
+                 "2017-01", "2017-02", "2017-03", "2017-04", "2017-05",
+                 "2017-06", "2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12"),
+  Season = c("Spring", "Spring", "Spring",
+             "Summer", "Summer", "Summer", "Fall", "Fall", "Fall", "Winter",
+             "Winter", "Winter", "Spring", "Spring", "Spring",
+             "Summer", "Summer", "Summer", "Fall", "Fall", "Fall", "Winter")
+)
 
 # Data manipulation -------------------------------------------------------
 
@@ -212,7 +215,7 @@ rai.monthly <- function(record.table.subset, camop, start.date, end.date) {
     # calculate number of operation days for each camera in each month-year
     camop.subset.monthly.summary <- camop.subset.monthly %>%
       dplyr::select(-Camera) %>% # drop date (confusingly called camera due to transposing above)
-      pivot_longer(A06:All, names_to = "Camera", values_to = "Operating") %>% # new 'gather' function
+      pivot_longer(A03:All, names_to = "Camera", values_to = "Operating") %>% # new 'gather' function
       dplyr::group_by(Month_Year) %>%
       dplyr::summarise(Operation = sum(Operating, na.rm = TRUE))
   
