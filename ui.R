@@ -1,4 +1,4 @@
-# Gorongosa Camera Trap Data Shiny App
+# Hopland Camera Trap Data Shiny App
 
 # User interface
 
@@ -50,57 +50,28 @@ body <- dashboardBody(
       
       fluidRow(
         box(width = 12,
-          h1("Gorongosa Camera Traps"),
-          "This dashboard facilitates exploration of the first two years of camera trap data (mid-2016 through mid-2018) 
-          from the systematic grid in Gorongosa National Park, Mozambique. I (Kaitlyn Gaynor) collected 
-          and classified these data as part of my PhD research at the University of California - Berkeley,
-          supervised by Justin Brashares.")
+          h1("Hopland Camera Traps"),
+          "This dashboard facilitates exploration of the first 'phase' of camera trap data (mid-2016 through 2017) 
+          from the systematic grid of the Hopland Research and Extension Center, California. These data were collected, 
+          classified, and cleaned by Kaitlyn Gaynor, Alex McInturff, and a number of field associates and undergraduate volunteers,
+          supervised by PI Justin Brashares.")
       ),
       
       fluidRow(
         box(width = 12,
             title = "Camera trap study design",
             status = "primary",
-            "Study area in Gorongosa National Park. The camera trap grid is located south of Lake Urema, in savanna woodland. Insets show the location of Gorongosa National Park within Mozambique, and the study area within the park.",
-            div(img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/43552c76-4867-4d3f-b1d7-e4d2e263026a.png", 
+            "A) The study was conducted at the Hopland Research and Extension Center in Mendocino County, California (indicated with the blue star). 
+            B) Detail of study site, showing vegetation cover, locations of gridded camera traps, buildings and parking, and areas where hunting is prohibited (diagonal lines).",
+            div(img(src="https://i.ibb.co/T2RwHVD/Study-area-CLEAN.png", 
                     width=600), style = "text-align: center;"),
-            "To evaluate spatiotemporal patterns of mammal activity in Gorongosa National Park, we conducted a systematic camera trap survey 
-            in the woodland south of Lake Urema for three months in the late dry season of 2016 (September – November). We used a grid configuration 
-            to place 60 cameras in an area of 300km2 in the woodland. We selected this study region because it contained a high density of mammals 
-            and was accessible via the park’s road network. We divided the study area into 5km2 hexagonal grid cells and placed one Bushnell TrophyCam 
-            camera at the center point of each grid cell, such that each camera was approximately 2.8 km from its six nearest neighbors. We mounted 
-            each camera on a suitable tree within 100 meters of the center point, at a height of 1m, angled slightly downward. To maximize animal 
-            detections and minimize false triggers, we faced cameras towards open areas or small game trails showing signs of animal activity. Each 
-            camera was within 2 km of a road, but no cameras faced roads."
+            "To evaluate spatiotemporal patterns of mammal activity in the Hopland Research and Extension Center, we conducted a systematic camera trap survey.
+            We deployed 36 Reconyx HyperFire camera traps systematically in a grid. We placed cameras at the center points of hexagonal grid cells, with each 
+            camera located 750 meters away from its six nearest neighbors. After navigating to the pre-determined GPS location in each grid cell, we identified 
+            a suitable camera location within 50 meters of that location. When possible, we pointed cameras towards animal trails to maximize detections. All 
+            cameras were placed in security boxes attached to trees. Cameras were motion-activated, and took three consecutive photographs per detection event, 
+            with a 30-second refractory interval between detection events."
             )
-      ), 
-      
-      fluidRow(
-        box(title = "Funding and collaboration",
-            width = 12,
-            status = "primary",
-            "This work was possible thanks to the permission of the Mozambican government and the support of Gorongosa National Park staff, 
-            especially M. Stalmans, J. Denlinger, M. Mutemba, and P. Muagura. Field assistance was provided by C. Lencastro, G. Curtiz, 
-            D. Semente, and many rangers. Thanks to the research assistants who classified the species in the camera trap images: T. Gu, 
-            A. Wu, E. Lai, A. Ke, M. Levy, C. Jurgensen, and M. Silverberg, and thanks to the citizen scientists of WildCam Gorongosa. 
-            J. Daskin and M. Stalmans provided many of the spatial data layers and D. Gonçalves collected the participatory mapping data 
-            on hunting. We are grateful to the Brashares Group and Pringle Group for their feedback on this project. Funding for this work 
-            came from the National Science Foundation, Schmidt Science Fellows, the Rufford Foundation, the Explorers Club Mamont Scholars 
-            Program, Animal Behavior Society, IdeaWild, UC Center for African Studies Rocca Fellowship, UC Institute for International Studies, 
-            Sigma Xi Berkeley Chapter, and B. Alireza.",
-            div(img(src="http://www.kaitlyngaynor.com/uploads/2/8/0/3/28034347/published/gnp-logo.png?1563238709", width=100),
-                img(src="http://www.kaitlyngaynor.com/uploads/2/8/0/3/28034347/hhmi_1_orig.png", width=200),
-                img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/7df912f7-f9d1-431b-bda4-8759818069c2.png", width=90),
-                img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/18427632-c14a-4ab8-a03f-4ca6099c2377.jpeg", width=150), 
-                img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/36f1f0ea-a8b2-413c-a713-0b5cde5bfb1f.png", width=150),
-                img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/ec339c2a-299a-4cc2-8839-076b1048c55a.png", width=150),
-                img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/4b33b76b-681f-42cd-a916-c6798f8712ff.png", width=100),
-                img(src="https://panoptes-uploads.zooniverse.org/production/project_attached_image/16f7af1b-db79-412a-8803-9427a81b074b.png", width=50),
-                img(src="http://www.kaitlyngaynor.com/uploads/2/8/0/3/28034347/published/abs-logo.png?1563238682", width=100),
-                img(src="http://www.kaitlyngaynor.com/uploads/2/8/0/3/28034347/editor/sigmaxi_1.jpg?1563238692", width=100),
-                img(src="http://www.kaitlyngaynor.com/uploads/2/8/0/3/28034347/published/iis-logo-0.png?1563238751", width=80)
-                )
-        )
       )
       
     ),
@@ -121,6 +92,7 @@ body <- dashboardBody(
           title = "Choose a species:",
           selectInput(inputId = "species_select",
                       label = "",
+                      selected = "Deer",
                       choices = sort(unique(records$Species)))
         ),
         
@@ -129,11 +101,10 @@ body <- dashboardBody(
           
           dateRangeInput(inputId = "date_range",
                          label = "Date Range:",
-                         start = "2016-07-01",
-                         end = "2018-08-31"),
-          "The first camera was set on June 23, 2016, and the last camera was checked on September 15, 2018. 
-          If you choose dates outside of this range, it will generate an error.
-          No individual camera was operable for this entire period.",
+                         start = "2016-04-01",
+                         end = "2017-12-22"),
+          "The first camera was set on March 24, 2016, and the last camera was checked on December 22, 2017. 
+          If you choose dates outside of this range, it will generate an error.",
           br(),
           br(),
           
@@ -162,19 +133,11 @@ body <- dashboardBody(
             
             ),
         
-        box(title = "Environmental covariates of Relative Activity Index",
+        box(title = "RAI over time",
             collapsible = TRUE,
-            selectInput(inputId = "metadata_select",
-                        label = "Choose an environmental covariate:",
-                        choices = c("tree.hansen", "termite.large.count.50m", "termite.large.count.100m", "urema.distance", 
-                                    "river.distance", "road.major.distance", "boundary.distance", "fire.interval", 
-                                    "pans.100m", "pans.250m", "pans.500m", "lion.dry", 
-                                    "lion.wet", "termites.100m", "termites.250m", "termites.500m", "termites.1km")),
-            
-            plotlyOutput(outputId = "rai_metadata"),
-            "All covariates have been standardized to have a mean of 0 and standard deviation of 1 in the study area,
-            so x-axis units are meaningless.
-            Let me know if you are interested in how these data layers were generated."
+            "Monthly RAI for the selected time period, calculated for the entire grid network (total detections per total trap-nights across all operating cameras). 
+            An RAI of 0 indicates that there were no detections during that month.",
+            plotlyOutput(outputId = "monthly_rai_hist")
         )
 
       ),
@@ -187,11 +150,19 @@ body <- dashboardBody(
             plotOutput(outputId = "activity_plot")
             ),
         
-        box(title = "RAI over time",
+        box(title = "Environmental covariates of Relative Activity Index",
             collapsible = TRUE,
-            "Monthly RAI for the selected time period, calculated for the entire grid network (total detections per total trap-nights across all operating cameras). 
-            An RAI of 0 indicates that there were no detections during that month.",
-            plotlyOutput(outputId = "monthly_rai_hist")
+            selectInput(inputId = "metadata_select",
+                        label = "Choose an environmental covariate:",
+                        choices = c("Elevation", "Slope", "Vegetation", "Vegetation_Coarser", "BLM_Dist",
+                                    "Boundary_Dist", "Fence_Dist", "HQ_Dist", "Road_Dist", "Water_Dist",
+                                    "Ruggedness9", "Ruggedness25", "Ruggedness49", "Ruggedness81", "Ruggedness121",
+                                    "Viewshed", "Viewshed_Reclass", "NDVI2016", "Vegetation_Edge_Dist", "Chaparral_Edge_Dist")),
+            
+            plotlyOutput(outputId = "rai_metadata"),
+            "All covariates have been standardized to have a mean of 0 and standard deviation of 1 in the study area,
+            so x-axis units are meaningless.
+            Let me know if you are interested in how these data layers were generated."
         )
 
       )
@@ -206,7 +177,7 @@ body <- dashboardBody(
       
       fluidRow(
         box(h2("COMPARISON TOOL"), width = 12,
-            "This page enables the comparison of two data subsets. It can be used to compare patterns for a given species across seasons, or compare two species.")
+            "This page enables the comparison of two data subsets. It can be used to compare patterns for a given species across time periods, or compare two species.")
       ),
       
       fluidRow(
@@ -216,12 +187,13 @@ body <- dashboardBody(
           
           selectInput(inputId = "species_select_A",
                       label = "Choose species for dataset A:",
+                      selected = "Coyote",
                       choices = sort(unique(records$Species))),
           
           dateRangeInput(inputId = "date_range_A",
                          label = "Date Range:",
-                         start = "2016-07-01",
-                         end = "2018-08-31"),
+                         start = "2016-04-01",
+                         end = "2017-12-22"),
 
           numericInput(inputId = "independent_min_A",
                        label = "Set quiet period for independent detections (minutes):",
@@ -235,12 +207,13 @@ body <- dashboardBody(
           
           selectInput(inputId = "species_select_B",
                       label = "Choose species for dataset B:",
+                      selected = "Bear",
                       choices = sort(unique(records$Species))),
           
           dateRangeInput(inputId = "date_range_B",
                          label = "Date Range:",
-                         start = "2016-07-01",
-                         end = "2018-08-31"),
+                         start = "2016-04-01",
+                         end = "2017-12-22"),
           
           numericInput(inputId = "independent_min_B",
                        label = "Set quiet period for independent detections (minutes):",
@@ -285,7 +258,7 @@ body <- dashboardBody(
 # Dashboard ---------------------------------------------------------------
 
 dashboardPage(
-  dashboardHeader(title = "GNP Cameras"),
+  dashboardHeader(title = "HREC Cameras"),
   sidebar,
   body
 )
