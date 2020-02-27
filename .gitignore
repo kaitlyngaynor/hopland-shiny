@@ -40,4 +40,6 @@ vignettes/*.pdf
 
 .DS_Store
 
+# data
 shapefile/
+recordtable_hopland_for_shiny.csv
