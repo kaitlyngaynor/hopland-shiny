@@ -72,8 +72,8 @@ server <- function(input, output, session) {
       
       leaflet(hexes_rai()) %>%
         
-        setView(34.42, -18.95, 11) %>%
-        addTiles() %>% # or satellite image: addProviderTiles(providers$Esri.WorldImagery)
+        setView(-123.08, 39.01, 12) %>%
+        addProviderTiles(providers$Esri.WorldImagery) %>% 
         
         addPolygons(
           data = hexes_rai(),
@@ -98,8 +98,8 @@ server <- function(input, output, session) {
     } else {
       leaflet(hexes_rai()) %>%
         
-        setView(34.42, -18.95, 11) %>%
-        addTiles() %>% # or satellite image: addProviderTiles(providers$Esri.WorldImagery)
+        setView(-123.08, 39.01, 12) %>%
+        addProviderTiles(providers$Esri.WorldImagery) %>% 
         
         addPolygons(
           data = hexes_rai(),
@@ -158,7 +158,7 @@ server <- function(input, output, session) {
     ggplotly(ggplot(data = (monthly_rai() %>% filter(Camera == "All")),
            aes(x = Month_Year, y = RAI, fill = Season)) +
       geom_bar(stat = "identity") +
-      scale_fill_manual(values=c("#999999", "#F8766D", "#00BFC4")) +
+      #scale_fill_manual(values=c("#999999", "#F8766D", "#00BFC4")) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
       )
   })
