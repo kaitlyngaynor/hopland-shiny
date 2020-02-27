@@ -1,4 +1,4 @@
-# Gorongosa Camera Trap Data Shiny App
+# Hopland Camera Trap Data Shiny App
 
 library(tidyverse)
 library(shiny)
@@ -19,15 +19,6 @@ library(vroom)
 library(sf)
 library(scales)
 
-# setwd() creates problem when trying to publish to shiny.io, so don't run it
-#setwd(here::here("shiny-rai"))
-
-#source("modules/map_card.R")
-
-# source custom functions
-files.sources = list.files("functions", full.names = T)
-sapply(files.sources, source)
-
 # no scientific notation and round to 2 decimals
 options(scipen = 999) #, digits = 2)
 
@@ -35,44 +26,40 @@ options(scipen = 999) #, digits = 2)
 # Data import -------------------------------------------------------------
 
 # import shapefile
-hexes <- read_sf("shapefile", "CameraGridHexes") %>%
-  rename(Camera = StudySite) %>%
+hexes <- read_sf("shapefile", "hexagons_120acres_subset2") %>%
+  rename(Camera = ID_code) %>%
   st_transform(crs = "+proj=longlat +datum=WGS84")
 
 # import record table (vroom is much faster than read_csv!)
-records <- vroom("recordtable_allrecordscleaned_speciesmetadata.csv", delim = ",") %>%
-  mutate(Species = fct_recode(Species, "Zorilla" = "Pangolin")) %>%
-  mutate(Species = fct_recode(Species, "Suni" = "Lion")) %>% # can't figure out how to recode all in one line; strangely, it worked when I reloaded the app but not when I loaded from scratch. ah well, this works
-  mutate(Species = fct_recode(Species, "Bird" = "Elephant")) 
+records <- vroom("recordtable_hopland_for_shiny.csv", delim = ",") 
 records$Date <- as.Date(records$Date)
-
 
 # strip just month
 records$Month_Year <- format(as.Date(records$Date), "%Y-%m")
 
 # import camera operation spreadsheet
-camera_operation <- read_csv("Camera_operation_years1and2.csv") %>%
-  mutate_at(c("Start", "End", "Problem1_from", "Problem1_to",
-              "Problem2_from", "Problem2_to", "Problem3_from", "Problem3_to"),
+camera_operation <- read_csv("camera_operation_phase1.csv") %>%
+  mutate_at(c("Start", "End", "Problem1_from", "Problem1_to"),
+             # "Problem2_from", "Problem2_to", "Problem3_from", "Problem3_to"),
             ~as.Date(., format = "%m/%d/%y"))
 
 # import camera metadata
-camera_metadata <- read.csv("cam_metadata_norm_031519.csv") %>%
-  rename(Camera = StudySite) # records and camera_operation use "Camera" not "StudySite" so this allows them to join
+camera_metadata <- read.csv("data/camera_metadata_rasters.csv") 
 
-# specify seasons for each month-year
-seasons <- tibble(
-  Month_Year = c("2016-06", "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12",
-                 "2017-01", "2017-02", "2017-03", "2017-04", "2017-05",
-                 "2017-06", "2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12",
-                 "2018-01", "2018-02", "2018-03", "2018-04", "2018-05",
-                 "2018-06", "2018-07", "2018-08", "2018-09", "2018-10", "2018-11", "2018-12"),
-  Season = c("Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet",
-             "Wet", "Wet", "Wet", "Early Dry", "Early Dry",
-             "Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet",
-             "Wet", "Wet", "Wet", "Early Dry", "Early Dry",
-             "Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet")
-)
+# no seasons for Hopland data (unless we want them)
+## specify seasons for each month-year
+#seasons <- tibble(
+#  Month_Year = c("2016-06", "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12",
+#                 "2017-01", "2017-02", "2017-03", "2017-04", "2017-05",
+#                 "2017-06", "2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12",
+#                 "2018-01", "2018-02", "2018-03", "2018-04", "2018-05",
+#                 "2018-06", "2018-07", "2018-08", "2018-09", "2018-10", "2018-11", "2018-12"),
+#  Season = c("Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet",
+#             "Wet", "Wet", "Wet", "Early Dry", "Early Dry",
+#             "Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet",
+#             "Wet", "Wet", "Wet", "Early Dry", "Early Dry",
+#             "Early Dry", "Early Dry", "Late Dry", "Late Dry", "Late Dry", "Late Dry", "Wet")
+#)
 
 
 # Data manipulation -------------------------------------------------------
@@ -153,16 +140,9 @@ overlapPlot2 <- function (A, B, xscale = 24, linetype = c(1, 1), linecol = c("#F
 
 # Define unique classification categories. We will need this later to ensure these columns are present in all tables
 # There is probably a better way to do this that is not so hard-coded and uses unique(records$Species) but I can't figure it out
-allclassifications <- c(Aardvark = NA_real_, Baboon = NA_real_, Buffalo = NA_real_, Bushbaby = NA_real_, 
-                        Bushbuck = NA_real_, Bushpig = NA_real_, Civet = NA_real_, Duiker_common = NA_real_, 
-                        Duiker_red = NA_real_, Eland = NA_real_, Elephant = NA_real_, Genet = NA_real_, 
-                        Hare = NA_real_, Hartebeest = NA_real_, Hippo = NA_real_, Honey_badger = NA_real_, 
-                        Impala = NA_real_, Kudu = NA_real_, Lion = NA_real_, Mongoose_banded = NA_real_, 
-                        Mongoose_bushy_tailed = NA_real_, Mongoose_dwarf = NA_real_, Mongoose_large_grey = NA_real_,
-                        Mongoose_marsh = NA_real_, Mongoose_slender = NA_real_, Mongoose_white_tailed = NA_real_,
-                        Nyala = NA_real_, Oribi = NA_real_, Pangolin = NA_real_, Porcupine = NA_real_, 
-                        Reedbuck = NA_real_, Sable_antelope = NA_real_, Samango = NA_real_, Serval = NA_real_, 
-                        Vervet = NA_real_, Warthog = NA_real_, Waterbuck = NA_real_, Wildebeest = NA_real_)  
+allclassifications <- c(Bobcat = NA_real_, Coyote = NA_real_, Squirrel = NA_real_, Fox = NA_real_, Skunk = NA_real_, 
+                        Bear = NA_real_, Mountain_Lion = NA_real_, Raccoon = NA_real_, Jack_Rabbit = NA_real_, 
+                        Dog = NA_real_, Sheep = NA_real_, Pig = NA_real_, Deer_Buck = NA_real_, Deer = NA_real_) 
 
 # define RAI calculation function - using record table that has ALREADY BEEN SUBSET
 
@@ -201,41 +181,6 @@ rai.calculate <- function(record.table.subset, camop, start.date, end.date) {
   
 }
 
-# count records by month, for individual cameras and for all combined
-# does NOT control for differences in operation date
-
-record.count.monthly <- function(record.table.subset) {
-  
-  # calculate number of observations of each classification type at each camera
-  record_count <- record.table.subset %>%
-    dplyr::group_by(Species, Camera, Month_Year) %>%
-    dplyr::summarise(Detections = n()) %>%     # counts number of observations of each species
-    spread(key = Species, value = Detections)  # gets from long to wide format  
-  
-  # add columns for classes not present
-  record_count <- add_column(record_count, !!!allclassifications[!names(allclassifications) %in% names(record_count)])
-  
-  # gather data so each class-camera-month is its own row again
-  record_count <- record_count %>% 
-    gather(3:ncol(record_count), key = "Species", value = "Count")
-  
-  # replace NA with 0 
-  record_count[is.na(record_count)] <- 0
-  
-  # calculate for all cameras combined for each month-year
-  record_count_all <- record_count %>%
-    dplyr::group_by(Species, Month_Year) %>%
-    dplyr::summarise(Count = sum(Count)) 
-  
-  # add "camera" column
-  record_count_all$Camera <- "All"
-  
-  # join the total to the camera
-  record_count <- dplyr::bind_rows(record_count, record_count_all)
-  
-  return(record_count)
-  
-}
 
 rai.monthly <- function(record.table.subset, camop, start.date, end.date) {
   
@@ -309,81 +254,7 @@ rai.monthly <- function(record.table.subset, camop, start.date, end.date) {
   
 }
 
-rai.monthly.original <- function(record.table.subset, camop, start.date, end.date) {
-  
-  # calculate how long the camera was functioning in that time period
-  
-  # change start and end date to character
-  start.date <- as.character(start.date)
-  end.date <- as.character(end.date)
-  
-  # selects columns within specified dates
-  camop.subset <- dplyr::select(camop, Camera, start.date:end.date)
-  
-  # transpose data frame
-  camop.subset.monthly <- as_tibble(cbind(names(camop.subset), t(camop.subset)))
-  colnames(camop.subset.monthly) <- as.character(unlist(camop.subset.monthly[1,]))
-  camop.subset.monthly = camop.subset.monthly[-1, ]
-  
-  # fix to make numeric
-  camop.subset.monthly[, 2:ncol(camop.subset.monthly)] %<>% mutate_if(is.character, as.numeric)
-  
-  # sum operation for all cameras
-  camop.subset.monthly$All <- camop.subset.monthly %>%
-    select(-Camera) %>%
-    rowSums(na.rm = TRUE)
-  
-  # add column for just month
-  camop.subset.monthly$Month_Year <- format(as.Date(camop.subset.monthly$Camera), "%Y-%m")
-  
-  # calculate number of operation days for each camera in each month-year
-  camop.subset.monthly.summary <- camop.subset.monthly %>%
-    dplyr::select(-Camera) %>% # drop date (confusingly called camera due to transposing above)
-    pivot_longer(A06:All, names_to = "Camera", values_to = "Operating") %>% # new 'gather' function
-    dplyr::group_by(Camera, Month_Year) %>%
-    dplyr::summarise(Operation = sum(Operating, na.rm = TRUE))
-  
-  # calculate number of observations of each classification type at each camera
-  record_count <- record.table.subset %>%
-    dplyr::group_by(Species, Camera, Month_Year) %>%
-    dplyr::summarise(Detections = n()) %>%     # counts number of observations of each species
-    spread(key = Species, value = Detections)  # gets from long to wide format  
-  
-  # add columns for classes not present
-  record_count <- add_column(record_count, !!!allclassifications[!names(allclassifications) %in% names(record_count)])
-  
-  # gather data so each class-camera-month is its own row again
-  record_count <- record_count %>% gather(3:ncol(record_count), key = "Species", value = "Count")
-  
-  # replace NA with 0 
-  record_count[is.na(record_count)] <- 0
-  
-  # calculate for all cameras combined for each month-year
-  record_count_all <- record_count %>%
-    dplyr::group_by(Species, Month_Year) %>%
-    dplyr::summarise(Count = sum(Count)) 
-  
-  # add "camera" column
-  record_count_all$Camera <- "All"
-  
-  # join the total to the camera
-  record_count <- dplyr::bind_rows(record_count, record_count_all)
-  
-  # join camera operation dates and observations
-  RAI.table <- left_join(record_count, camop.subset.monthly.summary)
-  
-  # calculate RAI
-  RAI.table$RAI <- RAI.table$Count / RAI.table$Operation
-  
-  # replace infinity with NA
-  RAI.table %<>% mutate_if(is.numeric, list(~na_if(., Inf)))
-  
-  # merge with season
-  RAI.table <- left_join(RAI.table, seasons)
-  
-  return(RAI.table)
-  
-}
+
 
 # Define leaflet legend function ------------------------------------------
 
