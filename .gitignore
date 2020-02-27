@@ -42,4 +42,4 @@ vignettes/*.pdf
 
 # data
 shapefile/
-recordtable_hopland_for_shiny.csv
+data/
