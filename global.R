@@ -208,10 +208,9 @@ rai.monthly <- function(record.table.subset, camop, start.date, end.date) {
   
   # calculate number of operation days for each camera in each month-year
   camop.subset.monthly.summary <- camop.subset.monthly %>%
-    dplyr::select(-Camera) %>% # drop date (confusingly called camera due to transposing above)
-    pivot_longer(A03:All, names_to = "Camera", values_to = "Operating") %>% # new 'gather' function
+    dplyr::select(All, Month_Year) %>% # just select "all' and "Month_Year"
     dplyr::group_by(Month_Year) %>%
-    dplyr::summarise(Operation = sum(Operating, na.rm = TRUE))
+    dplyr::summarise(Operation = sum(All, na.rm = TRUE))
   
   # calculate for all cameras combined for each month-year
   record_count_all <- record.table.subset %>%
@@ -231,7 +230,7 @@ rai.monthly <- function(record.table.subset, camop, start.date, end.date) {
   RAI.table %<>% mutate_if(is.numeric, list(~na_if(., Inf)))
   
   # merge with season
-  RAI.table <- left_join(seasons, RAI.table) %>% as.data.frame()
+  RAI.table <- left_join(RAI.table, seasons) %>% as.data.frame()
   
   return(RAI.table)
   
