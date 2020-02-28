@@ -9,12 +9,25 @@ server <- function(input, output, session) {
   
   # Subset based on widgets -------------------------------------------------
   
-  # create reactive object records_subset that changes based on delta time and date range
+  # create reactive object records_subset that changes based on species and delta time and date range
   records_subset <- reactive({
-    records %>%
-      filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min),
-             Date >= input$date_range[1], Date <= input$date_range[2]) %>%
-      filter(Species == input$species_select)
+    if(input$species_select == "Deer" & (input$deer_sex == "Doe" | input$deer_sex == "Buck")) {
+      records %>%
+        filter(Species == input$species_select, Sex == input$deer_sex) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min),
+               Date >= input$date_range[1], Date <= input$date_range[2])
+    } else if(input$species_select == "Deer" & input$deer_sex == "Fawn") {
+      records %>%
+        filter(Species == input$species_select, Age == input$deer_sex) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min),
+               Date >= input$date_range[1], Date <= input$date_range[2])
+    } else {
+      records %>%
+        filter(Species == input$species_select) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min),
+               Date >= input$date_range[1], Date <= input$date_range[2]) 
+    }
+
   })
 
   # Summarize subset data ---------------------------------------------------
@@ -175,16 +188,43 @@ server <- function(input, output, session) {
 
   # create reactive object records_subset that changes based on delta time and date range
   records_subset_A <- reactive({
-    records %>%
-      filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min),
-             Date >= input$date_range_A[1], Date <= input$date_range_A[2]) %>%
-      filter(Species == input$species_select_A)
+    if(input$species_select_A == "Deer" & (input$deer_sex_A == "Doe" | input$deer_sex_A == "Buck")) {
+      records %>%
+        filter(Species == input$species_select_A, Sex == input$deer_sex_A) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min_A),
+               Date >= input$date_range_A[1], Date <= input$date_range_A[2])
+    } else if(input$species_select_A == "Deer" & input$deer_sex_A == "Fawn") {
+      records %>%
+        filter(Species == input$species_select_A, Age == input$deer_sex_A) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min_A),
+               Date >= input$date_range_A[1], Date <= input$date_range_A[2])
+    } else {
+      records %>%
+        filter(Species == input$species_select_A) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min_A),
+               Date >= input$date_range_A[1], Date <= input$date_range_A[2]) 
+    }
+    
   })
+  
   records_subset_B <- reactive({
-    records %>%
-      filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min),
-             Date >= input$date_range_B[1], Date <= input$date_range_B[2]) %>%
-      filter(Species == input$species_select_B)
+    if(input$species_select_B == "Deer" & (input$deer_sex_B == "Doe" | input$deer_sex_B == "Buck")) {
+      records %>%
+        filter(Species == input$species_select_B, Sex == input$deer_sex_B) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min_B),
+               Date >= input$date_range_B[1], Date <= input$date_range_B[2])
+    } else if(input$species_select_B == "Deer" & input$deer_sex_B == "Fawn") {
+      records %>%
+        filter(Species == input$species_select_B, Age == input$deer_sex_B) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min_B),
+               Date >= input$date_range_B[1], Date <= input$date_range_B[2])
+    } else {
+      records %>%
+        filter(Species == input$species_select_B) %>% 
+        filter(delta.time.secs == 0 | delta.time.secs >= (60 * input$independent_min_B),
+               Date >= input$date_range_B[1], Date <= input$date_range_B[2]) 
+    }
+    
   })
 
   # calculate RAI
