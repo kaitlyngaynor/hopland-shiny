@@ -183,74 +183,59 @@ rai.monthly <- function(record.table.subset, camop, start.date, end.date) {
   
   # calculate how long the camera was functioning in that time period
   
-    # change start and end date to character
-    start.date <- as.character(start.date)
-    end.date <- as.character(end.date)
-    
-    # selects columns within specified dates
-    camop.subset <- dplyr::select(camop, Camera, start.date:end.date)
-    
-    # transpose data frame
-    camop.subset.monthly <- as_tibble(cbind(names(camop.subset), t(camop.subset)))
-    colnames(camop.subset.monthly) <- as.character(unlist(camop.subset.monthly[1,]))
-    camop.subset.monthly = camop.subset.monthly[-1, ]
-    
-    # fix to make numeric
-    camop.subset.monthly[, 2:ncol(camop.subset.monthly)] %<>% mutate_if(is.character, as.numeric)
-    
-    # sum operation for all cameras
-    camop.subset.monthly$All <- camop.subset.monthly %>%
-      select(-Camera) %>%
-      rowSums(na.rm = TRUE)
-    
-    # add column for just month
-    camop.subset.monthly$Month_Year <- format(as.Date(camop.subset.monthly$Camera), "%Y-%m")
-    
-    # calculate number of operation days for each camera in each month-year
-    camop.subset.monthly.summary <- camop.subset.monthly %>%
-      dplyr::select(-Camera) %>% # drop date (confusingly called camera due to transposing above)
-      pivot_longer(A03:All, names_to = "Camera", values_to = "Operating") %>% # new 'gather' function
-      dplyr::group_by(Month_Year) %>%
-      dplyr::summarise(Operation = sum(Operating, na.rm = TRUE))
+  # change start and end date to character
+  start.date <- as.character(start.date)
+  end.date <- as.character(end.date)
   
-  # calculate number of observations of each species at each camera
-  record_count <- record.table.subset %>%
-    dplyr::group_by(Camera, Month_Year) %>%
-    dplyr::summarise(Detections = n())  
+  # selects columns within specified dates
+  camop.subset <- dplyr::select(camop, Camera, start.date:end.date)
   
-  # replace NA with 0 
-  record_count[is.na(record_count)] <- 0
+  # transpose data frame
+  camop.subset.monthly <- as_tibble(cbind(names(camop.subset), t(camop.subset)))
+  colnames(camop.subset.monthly) <- as.character(unlist(camop.subset.monthly[1,]))
+  camop.subset.monthly = camop.subset.monthly[-1, ]
+  
+  # fix to make numeric
+  camop.subset.monthly[, 2:ncol(camop.subset.monthly)] %<>% mutate_if(is.character, as.numeric)
+  
+  # sum operation for all cameras
+  camop.subset.monthly$All <- camop.subset.monthly %>%
+    select(-Camera) %>%
+    rowSums(na.rm = TRUE)
+  
+  # add column for just month
+  camop.subset.monthly$Month_Year <- format(as.Date(camop.subset.monthly$Camera), "%Y-%m")
+  
+  # calculate number of operation days for each camera in each month-year
+  camop.subset.monthly.summary <- camop.subset.monthly %>%
+    dplyr::select(-Camera) %>% # drop date (confusingly called camera due to transposing above)
+    pivot_longer(A03:All, names_to = "Camera", values_to = "Operating") %>% # new 'gather' function
+    dplyr::group_by(Month_Year) %>%
+    dplyr::summarise(Operation = sum(Operating, na.rm = TRUE))
   
   # calculate for all cameras combined for each month-year
-  record_count_all <- record_count %>%
+  record_count_all <- record.table.subset %>%
     dplyr::group_by(Month_Year) %>%
-    dplyr::summarise(Detections = sum(Detections)) 
-  
-  # add "camera" column
-  record_count_all$Camera <- "All"
-  
-  # join the total to the camera
-  record_count <- dplyr::bind_rows(record_count, record_count_all)
+    dplyr::summarise(Detections = n()) 
   
   # join camera operation dates and observations
-  RAI.table <- left_join(record_count, camop.subset.monthly.summary)
+  RAI.table <- full_join(record_count_all, camop.subset.monthly.summary)
+  
+  # replace NA with 0 
+  RAI.table[is.na(RAI.table)] <- 0
   
   # calculate RAI
   RAI.table$RAI <- RAI.table$Detections / RAI.table$Operation
-
+  
   # replace infinity with NA
   RAI.table %<>% mutate_if(is.numeric, list(~na_if(., Inf)))
   
   # merge with season
   RAI.table <- left_join(seasons, RAI.table) %>% as.data.frame()
   
-  # replace NA with 0 again (set RAI to 0 for blank months)
-  RAI.table[is.na(RAI.table)] <- 0
-  
   return(RAI.table)
   
 }
-
 
 
 # Define leaflet legend function ------------------------------------------
