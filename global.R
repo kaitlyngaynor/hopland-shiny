@@ -141,12 +141,6 @@ overlapPlot2 <- function (A, B, xscale = 24, linetype = c(1, 1), linecol = c("#F
 
 # Define RAI functions -----------------------------------------------------
 
-# Define unique classification categories. We will need this later to ensure these columns are present in all tables
-# There is probably a better way to do this that is not so hard-coded and uses unique(records$Species) but I can't figure it out
-allclassifications <- c(Bobcat = NA_real_, Coyote = NA_real_, Squirrel = NA_real_, Fox = NA_real_, Skunk = NA_real_, 
-                        Bear = NA_real_, Mountain_Lion = NA_real_, Raccoon = NA_real_, Jack_Rabbit = NA_real_, 
-                        Dog = NA_real_, Sheep = NA_real_, Pig = NA_real_, Deer_Buck = NA_real_, Deer = NA_real_) 
-
 # define RAI calculation function - using record table that has ALREADY BEEN SUBSET
 
 rai.calculate <- function(record.table.subset, camop, start.date, end.date) {
