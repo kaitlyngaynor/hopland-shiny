@@ -93,7 +93,18 @@ body <- dashboardBody(
           selectInput(inputId = "species_select",
                       label = "",
                       selected = "Deer",
-                      choices = sort(unique(records$Species)))
+                      choices = sort(unique(records$Species))),
+          
+          # panel will only pop up if Deer is selected - will allow further subsetting
+          conditionalPanel(
+            condition = "input.species_select == 'Deer'",
+            radioButtons(
+              inputId = "deer_sex",
+              label = "Subset by class:",
+              choices = list("All", "Doe", "Buck", "Fawn")
+            ),
+            "Note: It would be possible to subset bucks further to legal, antlerless, spike, young w/ buttons - not yet implemented"
+          )
         ),
         
         box(
@@ -126,7 +137,8 @@ body <- dashboardBody(
             collapsible = TRUE,
             leafletOutput(outputId = "rai_map"),
             "Detections per trap-night at each camera. Note that greyed-out hexagons were not operable during the selected period.",
-            "Switch to log scale for easier viewing (small value of 0.001 added to all RAI to address issue with 0s)",
+            "Switch to log scale for easier viewing (small value of 0.001 added to all RAI to address issue with 0s). 
+            Warning that if RAI <1 (which it often is) it will go negative... this worked better for Gorongosa data",
             radioButtons(inputId = "log_select_map", label = "",
                          choices = list("RAI" = 1, "log(RAI)" = 2), 
                          selected = 1)
@@ -199,7 +211,18 @@ body <- dashboardBody(
                        label = "Set quiet period for independent detections (minutes):",
                        value = 15,
                        min = 0,
-                       max = 1440)
+                       max = 1440),
+          
+          # panel will only pop up if Deer is selected - will allow further subsetting
+          conditionalPanel(
+            condition = "input.species_select_A == 'Deer'",
+            radioButtons(
+              inputId = "deer_sex_A",
+              label = "Subset by class:",
+              choices = list("All", "Doe", "Buck", "Fawn")
+            ),
+            "It would be possible to subset bucks further to legal, antlerless, spike, young w/ buttons - not yet implemented"
+          )
         ),
         
         box(
@@ -219,7 +242,18 @@ body <- dashboardBody(
                        label = "Set quiet period for independent detections (minutes):",
                        value = 15,
                        min = 0,
-                       max = 1440)
+                       max = 1440),
+          
+          # panel will only pop up if Deer is selected - will allow further subsetting
+          conditionalPanel(
+            condition = "input.species_select_B == 'Deer'",
+            radioButtons(
+              inputId = "deer_sex_B",
+              label = "Subset by class:",
+              choices = list("All", "Doe", "Buck", "Fawn")
+            ),
+            "It would be possible to subset bucks further to legal, antlerless, spike, young w/ buttons - not yet implemented"
+          )
         )
       ),
 
@@ -231,21 +265,23 @@ body <- dashboardBody(
             plotOutput(outputId = "activity_plot_compare")
             ),
         
-        box(title = "Side-by-side trend over time",
+        box(title = "Plot of RAI A vs B",
             collapsible = TRUE,
-            plotlyOutput(outputId = "rai_monthly_AB"))
+            plotlyOutput(outputId = "rai_AB"),
+            "Option to switch to log scale for easier viewing (small value of 0.001 added to all RAI to address issue with 0s). 
+            Warning that if RAI <1 (which it often is) it will go negative... this worked better for Gorongosa data",
+            radioButtons(inputId = "log_select", label = "",
+                         choices = list("RAI" = 1, "log(RAI)" = 2), 
+                         selected = 1)
+        )
         
       ),
       
       fluidRow(
         
-        box(title = "Plot of RAI A vs B",
+        box(title = "Side-by-side trend over time",
             collapsible = TRUE,
-            plotlyOutput(outputId = "rai_AB"),
-            "Option to switch to log scale for easier viewing (small value of 0.001 added to all RAI to address issue with 0s)",
-            radioButtons(inputId = "log_select", label = "",
-                         choices = list("RAI" = 1, "log(RAI)" = 2), 
-                         selected = 1)
+            plotlyOutput(outputId = "rai_monthly_AB")
             )
         
       )
