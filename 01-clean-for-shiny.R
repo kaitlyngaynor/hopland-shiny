@@ -52,13 +52,13 @@ for (i in 1:nrow(records)) {
     records$drop[i] <- TRUE}
   else if (records$Date[i] > records$End[i]) {
     records$drop[i] <- TRUE}
-  else if ((is.na(records$Problem1_from[i]) = FALSE) & (records$Date[i] > records$Problem1_from[i]) & (records$Date[i] < records$Problem1_to[i])) {
+  else if ((is.na(records$Problem1_from[i]) == FALSE) & (records$Date[i] > records$Problem1_from[i]) & (records$Date[i] < records$Problem1_to[i])) {
     records$drop[i] <- TRUE}
   else {
     records$drop[i] <- FALSE}
 }
 
-summary(records$drop) # there are 137 (out of 38895)
+summary(records$drop) # there are 143 (out of 38895)
 
 # exclude records outside of operation dates
 records <- records[records$drop == FALSE,]
