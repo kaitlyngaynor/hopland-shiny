@@ -113,8 +113,8 @@ body <- dashboardBody(
           dateRangeInput(inputId = "date_range",
                          label = "Date Range:",
                          start = "2016-04-01",
-                         end = "2017-12-22"),
-          "The first camera was set on March 24, 2016, and the last camera was checked on December 22, 2017. 
+                         end = "2019-12-27"),
+          "The first camera was set on March 24, 2016, and the last camera was checked on December 27, 2019. 
           If you choose dates outside of this range, it will generate an error.",
           br(),
           br(),
@@ -205,7 +205,7 @@ body <- dashboardBody(
           dateRangeInput(inputId = "date_range_A",
                          label = "Date Range:",
                          start = "2016-04-01",
-                         end = "2017-12-22"),
+                         end = "2019-12-27"),
 
           numericInput(inputId = "independent_min_A",
                        label = "Set quiet period for independent detections (minutes):",
@@ -236,7 +236,7 @@ body <- dashboardBody(
           dateRangeInput(inputId = "date_range_B",
                          label = "Date Range:",
                          start = "2016-04-01",
-                         end = "2017-12-22"),
+                         end = "2019-12-27"),
           
           numericInput(inputId = "independent_min_B",
                        label = "Set quiet period for independent detections (minutes):",
