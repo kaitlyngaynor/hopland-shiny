@@ -51,9 +51,9 @@ body <- dashboardBody(
       fluidRow(
         box(width = 12,
           h1("Hopland Camera Traps"),
-          "This dashboard facilitates exploration of the first 'phase' of camera trap data (mid-2016 through 2017) 
+          "This dashboard facilitates exploration of the first 'phase' of camera trap data (mid-2016 through 2019) 
           from the systematic grid of the Hopland Research and Extension Center, California. These data were collected, 
-          classified, and cleaned by Kaitlyn Gaynor, Alex McInturff, and a number of field associates and undergraduate volunteers,
+          classified, and cleaned by Kaitlyn Gaynor, Alex McInturff, Kendall Calhoun, Janelle Dorcy, Alison Smith, and a number of field associates and undergraduate volunteers,
           supervised by PI Justin Brashares.")
       ),
       
